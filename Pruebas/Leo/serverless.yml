@@ -1,0 +1,54 @@
+service: prueba-abp-serverless
+
+custom:
+  dynamo_temp: Temp
+  dynamo_login: Login
+
+provider:
+  name: aws
+  runtime: python3.6
+  role:  arn:aws:iam::042039782245:role/prueba_abp
+  
+functions:
+  temp:
+    handler: temp.lambda_handler
+  login:
+    handler: login.lambda_handler
+
+resources:
+  Resources:
+    LoginTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: usuario
+            AttributeType: S
+          - AttributeName: pass
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.dynamo_login}
+        
+    TempTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: temp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.dynamo_temp}
