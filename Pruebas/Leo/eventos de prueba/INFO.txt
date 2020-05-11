@@ -1,0 +1,8 @@
+Antes de utilizar estos eventos de prueba confirmar:
+
+* Se tiene la tabla creada
+	NOMBRE_TABLA: Users
+	CLAVE_PARTICIÓN: usuario
+	NO hay clave de ordenación
+* La Lambda tiene el rol de lambda admin (AdministratorAccess)
+* Cualquier duda preguntar :3

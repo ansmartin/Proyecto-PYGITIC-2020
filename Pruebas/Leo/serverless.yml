@@ -1,19 +1,39 @@
 service: prueba-abp-serverless
 
+#package:
+#  exclude:
+#    - ./**
+#  include:
+#    - handlers/**
+
 custom:
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "us-east-1"}
   dynamo_temp: Temp
   dynamo_login: Login
+  s3_bucket: practica.${self:custom.stage}.${self:custom.region}.abp.prueba.com
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.8
   role:  arn:aws:iam::042039782245:role/prueba_abp
+  #deploymentBucket:
+  codedeploydemobucket:
+    name: svls.deploys.${self:custom.region}.abp.prueba.com
+  environment:
+    BUCKET_NAME: ${self:custom.s3_bucket}
+    TABLE_LOGIN: ${self:custom.dynamo_login}
+    TABLE_TEMP: ${self:custom.dynamo_temp}
   
 functions:
   temp:
     handler: temp.lambda_handler
   login:
     handler: login.lambda_handler
+  #web:
+    #handler: *por determinar*
+    #events:
+    #  - s3: ${self:custom.s3_bucket}
 
 resources:
   Resources:
@@ -22,32 +42,33 @@ resources:
       DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
           - AttributeName: usuario
             AttributeType: S
-          - AttributeName: pass
+          - AttributeName: password
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: usuario
             KeyType: HASH
+          - AttributeName: password
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:custom.dynamo_login}
-        
     TempTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: usuario
             AttributeType: S
           - AttributeName: temp
             AttributeType: N
         KeySchema:
-          - AttributeName: id
+          - AttributeName: usuario
             KeyType: HASH
+          - AttributeName: temp
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

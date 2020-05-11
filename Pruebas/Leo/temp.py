@@ -1,3 +1,5 @@
+#IGNORAR de momento
+
 import os
 import json
 import decimal
