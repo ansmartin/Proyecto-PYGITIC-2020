@@ -1,19 +1,15 @@
-#Sin terminar hasta saber cómo manejar la comunicación MQTT
-
 import os
 import json
-from datetime import datetime
 import uuid
 import boto3
 
 dynamodb = boto3.resource("dynamodb")
 table_user = dynamodb.Table("Users")
-table_temp = dynamodb.Table("Temp")
 
 def lambda_handler(event, context):
-	item = new_temp(event["user"], event["password"])
+	item = new_user(event["user"], event["password"])
 	c = check_user(item["usuario"], item["password"])
-	saved = save_temp(item)
+	saved = save_user(item)
 	return {
         "statusCode": 200,
         "user": event["user"],
@@ -21,7 +17,8 @@ def lambda_handler(event, context):
         "item": json.dumps(item),
         "itemUser": item["usuario"],
         "itemPass": item["password"],
-        "comprobar": json.dumps(c)
+        "comprobar": json.dumps(c),
+        "saved": json.dumps(saved)
     }
 	
 def check_user(user, password):
@@ -34,15 +31,15 @@ def check_user(user, password):
     #checkPass = response["Item"]["password"]
     return checkPass == password
 
-def save_temp(item):
+def save_user(item):
     response = "Ya existe"
     if check_user(item["usuario"], item["password"]) == False:
-        response = table_temp.put_item(Item=item)
+        response = table_user.put_item(Item=item)
     return{
 	    "resultado": response
 	}
 
-def new_temp(user, password):
+def new_user(user, password):
     return {
         "id": str(uuid.uuid4()),
 		"usuario": user,

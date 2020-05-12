@@ -4,7 +4,7 @@ El return de la api todavía hay que verlo, para ver cómo procesar los datos de
 
 window._config = {
     api: {
-        invokeUrl: '' //Esta url luego se llenará con la api 
+        invokeUrl: 'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod' //Esta url luego se llenará con la api 
     }
 };
 
@@ -13,10 +13,8 @@ function registrarUsuario(usuario, pass) {
 		method: 'POST',
 		url: _config.api.invokeUrl + '/heatsense', //la "carpeta" representa la localización de los métodos en la api
 		data: JSON.stringify({
-			user: {
-				usuario: usuario,
-				password: pass
-			}
+			user: usuario,
+			password: pass
 		}),
 		contentType: 'application/json'
 	});
@@ -27,10 +25,8 @@ function loginUsuario(usuario, pass) {
 		method: 'GET',
 		url: _config.api.invokeUrl + '/heatsense', 
 		data: JSON.stringify({
-			user: {
-				usuario: usuario,
-				password: pass
-			}
+			user: usuario,
+			password: pass
 		}),
 		contentType: 'application/json'
 	});
