@@ -4,8 +4,8 @@ El return de la api todavía hay que verlo, para ver cómo procesar los datos de
 
 window._config = {
     cognito: {
-        userPoolId: '', // Falta
-        userPoolClientId: '', // Falta
+        userPoolId: 'us-east-1_SPhF6m95j',
+        userPoolClientId: '7de21ln51l1o995v5fq0ipc1vh',
         region: 'us-east-1'
     },
 	api: {
