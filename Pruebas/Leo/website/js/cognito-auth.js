@@ -1,48 +1,6 @@
-/*
-El return de la api todavía hay que verlo, para ver cómo procesar los datos desde aquí
-*/
+/*global WildRydes _config AmazonCognitoIdentity AWSCognito*/
 
-window._config = {
-    cognito: {
-        userPoolId: '', // Falta
-        userPoolClientId: '', // Falta
-        region: 'us-east-1'
-    },
-	api: {
-        invokeUrl: 'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod'
-    }
-};
-
-/*function registrarUsuario(usuario, pass) {
-	$.ajax({
-		method: 'POST',
-		url: _config.api.invokeUrl + '/heatsense', //la "carpeta" representa la localización de los métodos en la api
-		data: JSON.stringify({
-			user: usuario,
-			password: pass
-		}),
-		contentType: 'application/json'
-	});
-}
-
-function loginUsuario(usuario, pass) {
-	$.ajax({
-		method: 'GET',
-		url: _config.api.invokeUrl + '/heatsense', 
-		data: JSON.stringify({
-			user: usuario,
-			password: pass
-		}),
-		contentType: 'application/json'
-	});
-}*/
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//cognito-auth.js
-/*global HeatSense _config AmazonCognitoIdentity AWSCognito*/
-
-var HeatSense = window.HeatSense || {};
+var WildRydes = window.WildRydes || {};
 
 (function scopeWrapper($) {
     var signinUrl = 'signin.html';
@@ -54,12 +12,12 @@ var HeatSense = window.HeatSense || {};
 
     var userPool;
 
-    /*if (!(_config.cognito.userPoolId &&
+    if (!(_config.cognito.userPoolId &&
           _config.cognito.userPoolClientId &&
           _config.cognito.region)) {
         $('#noCognitoMessage').show();
         return;
-    }*/
+    }
 
     userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
@@ -67,11 +25,11 @@ var HeatSense = window.HeatSense || {};
         AWSCognito.config.region = _config.cognito.region;
     }
 
-    HeatSense.signOut = function signOut() {
+    WildRydes.signOut = function signOut() {
         userPool.getCurrentUser().signOut();
     };
 
-    HeatSense.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
+    WildRydes.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
         var cognitoUser = userPool.getCurrentUser();
 
         if (cognitoUser) {
@@ -209,64 +167,3 @@ var HeatSense = window.HeatSense || {};
         );
     }
 }(jQuery));
-
-
-/////////////////////////////////////////////////////////////////////
-//Login
-<section class="form-wrap">
-            <h1>Sign In</h1>
-            <form id="signinForm">
-              <input type="email" id="emailInputSignin" placeholder="Email" required>
-              <input type="password" id="passwordInputSignin" placeholder="Password" pattern=".*" required>
-
-              <input type="submit" value="Sign in">
-            </form>
-        </section>
-
-        <script src="js/vendor/jquery-3.1.0.js"></script>
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/aws-cognito-sdk.min.js"></script>
-        <script src="js/vendor/amazon-cognito-identity.min.js"></script>
-        <script src="js/config.js"></script>
-        <script src="js/cognito-auth.js"></script>
-
-
-/////////////////////////////////////////////////////////////////////
-//Registro
-<section class="form-wrap">
-            <h1>Register</h1>
-            <form id="registrationForm">
-              <input type="email" id="emailInputRegister" placeholder="Email" pattern=".*" required>
-              <input type="password" id="passwordInputRegister" placeholder="Password" pattern=".*" required>
-              <input type="password" id="password2InputRegister" placeholder="Confirm Password" pattern=".*" required>
-
-              <input type="submit" value="Let's Ryde">
-            </form>
-        </section>
-
-        <script src="js/vendor/jquery-3.1.0.js"></script>
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/aws-cognito-sdk.min.js"></script>
-        <script src="js/vendor/amazon-cognito-identity.min.js"></script>
-        <script src="js/config.js"></script>
-        <script src="js/cognito-auth.js"></script>
-
-
-/////////////////////////////////////////////////////////////////////
-//Validación
-<section class="form-wrap">
-            <h1>Verify Email</h1>
-            <form id="verifyForm">
-              <input type="email" id="emailInputVerify" placeholder="Email" required>
-              <input type="text" id="codeInputVerify" placeholder="Verification Code" pattern=".*" required>
-
-              <input type="submit" value="Verify">
-            </form>
-        </section>
-
-        <script src="js/vendor/jquery-3.1.0.js"></script>
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/aws-cognito-sdk.min.js"></script>
-        <script src="js/vendor/amazon-cognito-identity.min.js"></script>
-        <script src="js/config.js"></script>
-        <script src="js/cognito-auth.js"></script>
