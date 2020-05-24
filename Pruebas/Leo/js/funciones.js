@@ -94,14 +94,14 @@ var HeatSense = window.HeatSense || {};
      * Cognito User Pool functions
      */
 
-    function register(email, password, onSuccess, onFailure) {
+    function register(username, email, password, onSuccess, onFailure) {
         var dataEmail = {
             Name: 'email',
             Value: email
         };
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        userPool.signUp(email, password, [attributeEmail], null,
+        userPool.signUp(username, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -112,9 +112,10 @@ var HeatSense = window.HeatSense || {};
         );
     }
 
-    function signin(email, password, onSuccess, onFailure) {
+    function signin(username, /*email,*/ password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: email,
+            Username: username,
+			/*Email: email,*/
             Password: password
         });
 
@@ -153,10 +154,11 @@ var HeatSense = window.HeatSense || {};
     });
 
     function handleSignin(event) {
-        var email = $('#emailInputSignin').val();
+		var username = $('usernameInputSignin').val();
+        //var email = $('#emailInputSignin').val();
         var password = $('#passwordInputSignin').val();
         event.preventDefault();
-        signin(email, password,
+        signin(username, /*email,*/ password,
             function signinSuccess() {
                 console.log('Successfully Logged In');
                 window.location.href = 'ride.html';
@@ -168,6 +170,7 @@ var HeatSense = window.HeatSense || {};
     }
 
     function handleRegister(event) {
+		var username = $('usernameInputRegister').val();
         var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
@@ -186,7 +189,7 @@ var HeatSense = window.HeatSense || {};
         event.preventDefault();
 
         if (password === password2) {
-            register(email, password, onSuccess, onFailure);
+            register(username, email, password, onSuccess, onFailure);
         } else {
             alert('Passwords do not match');
         }
@@ -216,7 +219,8 @@ var HeatSense = window.HeatSense || {};
 <section class="form-wrap">
             <h1>Sign In</h1>
             <form id="signinForm">
-              <input type="email" id="emailInputSignin" placeholder="Email" required>
+              <input type="text" id="usernameInputSignin" placeholder="Email" required>
+			  //<input type="email" id="emailInputSignin" placeholder="Email" //required>
               <input type="password" id="passwordInputSignin" placeholder="Password" pattern=".*" required>
 
               <input type="submit" value="Sign in">
@@ -236,6 +240,7 @@ var HeatSense = window.HeatSense || {};
 <section class="form-wrap">
             <h1>Register</h1>
             <form id="registrationForm">
+			  <input type="text" id="usernameInputRegister" placeholder="Text" pattern=".*" required>
               <input type="email" id="emailInputRegister" placeholder="Email" pattern=".*" required>
               <input type="password" id="passwordInputRegister" placeholder="Password" pattern=".*" required>
               <input type="password" id="password2InputRegister" placeholder="Confirm Password" pattern=".*" required>
@@ -270,3 +275,10 @@ var HeatSense = window.HeatSense || {};
         <script src="js/vendor/amazon-cognito-identity.min.js"></script>
         <script src="js/config.js"></script>
         <script src="js/cognito-auth.js"></script>
+
+/////////////////////////////////////////////////////////////////////
+//Contraseña olvidada
+
+/*
+EN PROCESO TODAVÍA
+*/
