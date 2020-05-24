@@ -135,6 +135,26 @@ var HeatSense = window.HeatSense || {};
             }
         });
     }
+	
+	function forgot(email, onSuccess, onFailure) {
+        createCognitoUser(email).forgotPassword(function confirmCallback(err, result) {
+            if (!err) {
+                onSuccess(result);
+            } else {
+                onFailure(err);
+            }
+        });
+    }
+	
+	function confirmForgotPassword(code, email, password) {
+        createCognitoUser(email).confirmForgotPassword(code, password, function confirmCallback(err, result) {
+            if (!err) {
+                onSuccess(result);
+            } else {
+                onFailure(err);
+            }
+        });
+    }
 
     function createCognitoUser(email) {
         return new AmazonCognitoIdentity.CognitoUser({
@@ -151,6 +171,7 @@ var HeatSense = window.HeatSense || {};
         $('#signinForm').submit(handleSignin);
         $('#registrationForm').submit(handleRegister);
         $('#verifyForm').submit(handleVerify);
+		$('#forgotForm').submit(handleForgot);
     });
 
     function handleSignin(event) {
@@ -210,6 +231,46 @@ var HeatSense = window.HeatSense || {};
                 alert(err);
             }
         );
+    }
+	
+	function handleForgot(event) {
+        var email = $('#emailInputForgot').val();
+        event.preventDefault();
+        forgot(email,
+            function forgotSuccess(result) {
+                console.log('call result: ' + result);
+                console.log('Successfully forgot');
+                alert('Forgot successful. You will now be redirected to the login page.');
+                window.location.href = signinUrl;
+            },
+            function forgotError(err) {
+                alert(err);
+            }
+        );
+    }
+	
+	function handleConfirmForgot(event) {
+		var code = $('#codeInputConfirmForgot').val();
+        var email = $('#emailInputConfirmForgot').val();
+        var password = $('#passwordInputRegister').val();
+        var password2 = $('#password2InputRegister').val();
+        event.preventDefault();
+
+        if (password === password2) {
+            confirmForgotPassword(code, email, password, 
+				function confirmForgotSuccess(result) {
+					console.log('call result: ' + result);
+					console.log('Successfully confirmed forgot');
+					alert('Confirmed forgot successful. You will now be redirected to the login page.');
+					window.location.href = signinUrl;
+				},
+				function confirmForgotError(err) {
+					alert(err);
+				}
+			);
+        } else {
+            alert('Passwords do not match');
+        }
     }
 }(jQuery));
 
@@ -279,6 +340,39 @@ var HeatSense = window.HeatSense || {};
 /////////////////////////////////////////////////////////////////////
 //Contraseña olvidada
 
-/*
-EN PROCESO TODAVÍA
-*/
+<section class="form-wrap">
+            <h1>Verify Email</h1>
+            <form id="forgotForm">
+              <input type="email" id="emailInputForgot" placeholder="Email" required>
+
+              <input type="submit" value="Forgot">
+            </form>
+        </section>
+
+        <script src="js/vendor/jquery-3.1.0.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+        <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/cognito-auth.js"></script>
+		
+/////////////////////////////////////////////////////////////////////
+//Nueva contraseña
+<section class="form-wrap">
+            <h1>Register</h1>
+            <form id="confirmForgotForm">
+			  <input type="text" id="codeInputConfirmForgot" placeholder="Text" pattern=".*" required>
+              <input type="email" id="emailInputConfirmForgot" placeholder="Email" pattern=".*" required>
+              <input type="password" id="passwordInputConfirmForgot" placeholder="Password" pattern=".*" required>
+              <input type="password" id="password2InputConfirmForgot" placeholder="Confirm Password" pattern=".*" required>
+
+              <input type="submit" value="ConfirmForgot">
+            </form>
+        </section>
+
+        <script src="js/vendor/jquery-3.1.0.js"></script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+        <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/cognito-auth.js"></script>
