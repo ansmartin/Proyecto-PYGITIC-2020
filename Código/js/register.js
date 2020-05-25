@@ -87,7 +87,8 @@ var ball;
     }
 
     function verify(username, code, onSuccess, onFailure) {
-        createCognitoUser(username).confirmRegistration(code, true, function confirmCallback(err, result) {
+        console.log("username verify: " + username);
+		createCognitoUser(username).confirmRegistration(code, true, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -161,7 +162,8 @@ var ball;
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
-				ball = username;//document.getElementById('user').getAttribute('data-value');
+				ball = username;
+				console.log("ball: " + ball);
                 window.location.href = 'verify.html';
             }
         };
@@ -182,6 +184,7 @@ var ball;
 		var username = ball;
 		var code = $('#code').val();
         event.preventDefault();
+        console.log("username hadleVerify: " + username);
         verify(username, code,
             function verifySuccess(result) {
                 console.log('call result: ' + result);
