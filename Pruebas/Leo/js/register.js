@@ -128,7 +128,7 @@ var HeatSense = window.HeatSense || {};
 
     $(function onDocReady() {
         $('#signinForm').submit(handleSignin);
-        $('#registrationForm').submit(handleRegister);
+        $('#register').submit(handleRegister);
         $('#verifyForm').submit(handleVerify);
 		//$('#forgotForm').submit(handleForgot);
     });
@@ -150,10 +150,10 @@ var HeatSense = window.HeatSense || {};
     }
 
     function handleRegister(event) {
-		var username = $('#usernameInputRegister').val();
-        var email = $('#emailInputRegister').val();
-        var password = $('#passwordInputRegister').val();
-        var password2 = $('#password2InputRegister').val();
+		var username = $('#user').val();
+        var email = $('#email').val();
+        var password = $('#pass').val();
+        var password2 = $('#passcheck').val();
 
         var onSuccess = function registerSuccess(result) {
             var cognitoUser = result.user;
