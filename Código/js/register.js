@@ -160,7 +160,7 @@ var HeatSense = window.HeatSense || {};
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
-                window.location.href = 'verify.html';
+                window.location.href = 'verify.html.concat('user')';
             }
         };
         var onFailure = function registerFailure(err) {
