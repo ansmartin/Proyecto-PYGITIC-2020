@@ -78,15 +78,15 @@ var HeatSense = window.HeatSense || {};
             Password: password
         });
 
-        var cognitoUser = createCognitoUser(email);
+        var cognitoUser = createCognitoUser(username);
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,
             onFailure: onFailure
         });
     }
 
-    function verify(email, code, onSuccess, onFailure) {
-        createCognitoUser(email).confirmRegistration(code, true, function confirmCallback(err, result) {
+    function verify(username, code, onSuccess, onFailure) {
+        createCognitoUser(username).confirmRegistration(code, true, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -95,8 +95,8 @@ var HeatSense = window.HeatSense || {};
         });
     }
 	
-	/*function forgot(email, onSuccess, onFailure) {
-        createCognitoUser(email).forgotPassword(function confirmCallback(err, result) {
+	/*function forgot(username, onSuccess, onFailure) {
+        createCognitoUser(username).forgotPassword(function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -105,8 +105,8 @@ var HeatSense = window.HeatSense || {};
         });
     }
 	
-	function confirmForgotPassword(code, email, password) {
-        createCognitoUser(email).confirmForgotPassword(code, password, function confirmCallback(err, result) {
+	function confirmForgotPassword(code, username, password) {
+        createCognitoUser(username).confirmForgotPassword(code, password, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -115,9 +115,9 @@ var HeatSense = window.HeatSense || {};
         });
     }*/
 
-    function createCognitoUser(email) {
+    function createCognitoUser(username) {
         return new AmazonCognitoIdentity.CognitoUser({
-            Username: email,
+            Username: username,
             Pool: userPool
         });
     }
@@ -176,10 +176,11 @@ var HeatSense = window.HeatSense || {};
     }
 
     function handleVerify(event) {
-        var email = $('#emailInputVerify').val();
+        //var email = $('#emailInputVerify').val();
+		var username = $('#usernameInputVerify').val();
         var code = $('#codeInputVerify').val();
         event.preventDefault();
-        verify(email, code,
+        verify(username, code,
             function verifySuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
@@ -193,9 +194,9 @@ var HeatSense = window.HeatSense || {};
     }
 	
 	/*function handleForgot(event) {
-        var email = $('#emailInputForgot').val();
+        var username = $('#usernameInputForgot').val();
         event.preventDefault();
-        forgot(email,
+        forgot(username,
             function forgotSuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully forgot');
@@ -210,13 +211,13 @@ var HeatSense = window.HeatSense || {};
 	
 	/*function handleConfirmForgot(event) {
 		var code = $('#codeInputConfirmForgot').val();
-        var email = $('#emailInputConfirmForgot').val();
+        var username = $('#usernameInputConfirmForgot').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
         event.preventDefault();
 
         if (password === password2) {
-            confirmForgotPassword(code, email, password, 
+            confirmForgotPassword(code, username, password, 
 				function confirmForgotSuccess(result) {
 					console.log('call result: ' + result);
 					console.log('Successfully confirmed forgot');
