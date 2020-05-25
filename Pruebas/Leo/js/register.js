@@ -134,9 +134,9 @@ var HeatSense = window.HeatSense || {};
     });
 
     function handleSignin(event) {
-		var username = $('#usernameInputSignin').val();
-        var email = $('#emailInputSignin').val();
-        var password = $('#passwordInputSignin').val();
+		var username = $('#user').val();
+        var email = $('#email').val();
+        var password = $('#pass').val();
         event.preventDefault();
         signin(username, email, password,
             function signinSuccess() {
@@ -177,8 +177,8 @@ var HeatSense = window.HeatSense || {};
 
     function handleVerify(event) {
         //var email = $('#emailInputVerify').val();
-		var username = $('#usernameInputVerify').val();
-        var code = $('#codeInputVerify').val();
+		var username = $('#user').val();
+        	var code = $('#code').val();
         event.preventDefault();
         verify(username, code,
             function verifySuccess(result) {
