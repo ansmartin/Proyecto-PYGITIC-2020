@@ -179,7 +179,7 @@ var ball;
 
     function handleVerify(event) {
         //var email = $('#emailInputVerify').val();
-		var username = ball;
+		var username = $('#user').val();
 		var code = $('#code').val();
         event.preventDefault();
         verify(username, code,
