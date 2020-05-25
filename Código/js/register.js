@@ -5,7 +5,7 @@ window._config = {
         region: 'us-east-1'
     },
 	api: {
-        invokeUrl: 'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod'
+        invokeUrl: 'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod2'	//'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod'
     }
 };
 
@@ -13,15 +13,13 @@ var HeatSense = window.HeatSense || {};
 
 (function scopeWrapper($) {
     var signinUrl = 'index.html';
-
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,
         ClientId: _config.cognito.userPoolClientId
     };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-    var userPool;
-
-    userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+	var authToken;
 
     if (typeof AWSCognito !== 'undefined') {
         AWSCognito.config.region = _config.cognito.region;
@@ -33,7 +31,6 @@ var HeatSense = window.HeatSense || {};
 
     HeatSense.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
         var cognitoUser = userPool.getCurrentUser();
-
         if (cognitoUser) {
             cognitoUser.getSession(function sessionCallback(err, session) {
                 if (err) {
@@ -48,18 +45,20 @@ var HeatSense = window.HeatSense || {};
             resolve(null);
         }
     });
+	
+    HeatSense.authToken.then(function setAuthToken(token) {
+        authToken = token;
+    })
 
     /*
      * Cognito User Pool functions
      */
-
     function register(email, password, onSuccess, onFailure) {
         var dataEmail = {
             Name: 'email',
             Value: email
         };
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-
         userPool.signUp(email, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
@@ -76,7 +75,6 @@ var HeatSense = window.HeatSense || {};
 			Email: email,
             Password: password
         });
-
         var cognitoUser = createCognitoUser(email);
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,
@@ -124,13 +122,42 @@ var HeatSense = window.HeatSense || {};
     /*
      *  Event Handlers
      */
-
     $(function onDocReady() {
         $('#signinForm').submit(handleSignin);
-        $('#register').submit(handleRegister);
+        $('#registerForm').submit(handleRegister);
         $('#verifyForm').submit(handleVerify);
 		//$('#forgotForm').submit(handleForgot);
     });
+	
+	function getTemp(){
+		var url = _config.api.invokeUrl + '/heatsense';
+		var headers = {
+                Authorization: authToken
+            };
+		alert("url: " + url);
+		$.get({
+			url: url,
+            headers: {
+                'Authorization': authToken,
+				'Access-Control-Allow-Origin': '*'
+            },
+			success: function(data, status){
+						alert("Data?: " + data);
+					}
+		});
+		/*$.get(url, function(data, status){
+			alert("Data?: " + data);
+		});*/
+		/*$.ajax({
+            method: 'GET',
+            url: _config.api.invokeUrl + '/heatsense',
+            headers: {
+                Authorization: authToken
+            },
+			
+		});*/
+		alert("Data: " + data);
+	}
 
     function handleSignin(event) {
         var email = $('#email').val();
@@ -138,8 +165,11 @@ var HeatSense = window.HeatSense || {};
         event.preventDefault();
         signin(email, password,
             function signinSuccess() {
-                console.log('Successfully Logged In');
-                window.location.href = 'ride.html';
+				alert("Antes.");				
+				getTemp();
+				alert("Después.");		
+				console.log('Successfully Logged In');
+                window.location.href = 'good2go.html';
             },
             function signinError(err) {
                 alert(err);
@@ -148,23 +178,22 @@ var HeatSense = window.HeatSense || {};
     }
 
     function handleRegister(event) {
-        var email = $('#email').val();
-        var password = $('#pass').val();
-        var password2 = $('#passcheck').val();
-
+        var email = $('#emailRegisterForm').val();
+        var password = $('#passRegisterForm').val();
+        var password2 = $('#passcheckRegisterForm').val();
         var onSuccess = function registerSuccess(result) {
             var cognitoUser = result.user;
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
+			alert(confirmation);
             if (confirmation) {
-                window.location.href = 'verify.html';
+                window.location.href = 'verify.html';//?user=' + email;
             }
         };
         var onFailure = function registerFailure(err) {
             alert(err);
         };
         event.preventDefault();
-
         if (password === password2) {
             register(email, password, onSuccess, onFailure);
         } else {
@@ -173,20 +202,20 @@ var HeatSense = window.HeatSense || {};
     }
 
     function handleVerify(event) {
-        var email = $('#email').val();
-		var code = $('#code').val();
-        event.preventDefault();
-        verify(email, code,
-            function verifySuccess(result) {
-                console.log('call result: ' + result);
-                console.log('Successfully verified');
-                alert('Verification successful. You will now be redirected to the login page.');
-                window.location.href = signinUrl;
-            },
-            function verifyError(err) {
-                alert(err);
-            }
-        );
+        var email = $('#emailVerifyForm').val();
+		//var email = (new URLSearchParams(window.location.search)).searchParams.get('user');
+		var code = $('#codeVerifyForm').val();
+		var onSuccess = function verifySuccess(result) {
+			console.log('call result: ' + result);
+			console.log('Successfully verified');
+			alert('Verification successful. You will now be redirected to the login page.');
+			window.location.href = signinUrl;
+		};
+		var onFailure = function verifyError(err) {
+			alert(err);
+		};
+		event.preventDefault();
+		verify(email, code, onSuccess, onFailure);
     }
 	
 	/*function handleForgot(event) {

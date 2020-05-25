@@ -50,9 +50,9 @@
     <div class="col-sm-4">
 			<div class="login-card">
 				<h1>Hello!</h1><br>
-				<form>
+				<form id="signinForm">
 					<input type="text" name="email" id="email" placeholder="E-mail address">
-					<input type="password" name="pass" placeholder="Password">
+					<input type="password" name="pass" id="pass" placeholder="Password">
 					<input type="submit" name="login" class="login login-submit" value="Log in">
 				</form>
 				<div class="login-help">
@@ -61,6 +61,11 @@
 			</div>
       <hr class="d-sm-none">
     </div>
+	
+	<script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+    <script src="js/register.js"></script>
+	
     <div class="col-sm-8">
       <h2>We are HeatSense</h2>
       <h5>June 2020</h5>
