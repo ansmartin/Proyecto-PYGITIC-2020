@@ -10,6 +10,7 @@ window._config = {
 };
 
 var HeatSense = window.HeatSense || {};
+var ball;
 
 (function scopeWrapper($) {
     var signinUrl = 'index.html';
@@ -160,8 +161,8 @@ var HeatSense = window.HeatSense || {};
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
-		var val = document.getElementById('user').getAttribute('data-value');
-                window.location.href = 'verify.html?id='+val)';
+				ball = username;//document.getElementById('user').getAttribute('data-value');
+                window.location.href = 'verify.html';
             }
         };
         var onFailure = function registerFailure(err) {
@@ -178,8 +179,8 @@ var HeatSense = window.HeatSense || {};
 
     function handleVerify(event) {
         //var email = $('#emailInputVerify').val();
-		var username = $('#user').val();
-        	var code = $('#code').val();
+		var username = ball;
+		var code = $('#code').val();
         event.preventDefault();
         verify(username, code,
             function verifySuccess(result) {
