@@ -50,7 +50,7 @@
     <div class="col-sm-4">
 			<div class="login-card">
 				<h1>Confirm code reception</h1><br>
-				<form>
+				<form id="formverify">
                     <input type="text" id="code" name="code" placeholder="Enter your code">
                     
               <br><input type="submit" name="verify" id="verify" class="login login-submit" value="Confirm" onclick="show();">
@@ -60,6 +60,9 @@
 				<div class="login-help">
 				</div>
 			</div>
+				<script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+    <script src="js/register.js"></script>
       <hr class="d-sm-none">
     </div>
     <div class="col-sm-8">
