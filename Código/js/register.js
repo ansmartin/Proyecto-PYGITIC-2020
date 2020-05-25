@@ -10,7 +10,6 @@ window._config = {
 };
 
 var HeatSense = window.HeatSense || {};
-var ball;
 
 (function scopeWrapper($) {
     var signinUrl = 'index.html';
@@ -54,14 +53,14 @@ var ball;
      * Cognito User Pool functions
      */
 
-    function register(username, email, password, onSuccess, onFailure) {
+    function register(email, password, onSuccess, onFailure) {
         var dataEmail = {
             Name: 'email',
             Value: email
         };
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        userPool.signUp(username, password, [attributeEmail], null,
+        userPool.signUp(email, password, [attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -72,23 +71,21 @@ var ball;
         );
     }
 
-    function signin(username, email, password, onSuccess, onFailure) {
+    function signin(email, password, onSuccess, onFailure) {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: username,
 			Email: email,
             Password: password
         });
 
-        var cognitoUser = createCognitoUser(username);
+        var cognitoUser = createCognitoUser(email);
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,
             onFailure: onFailure
         });
     }
 
-    function verify(username, code, onSuccess, onFailure) {
-        console.log("username verify: " + username);
-		createCognitoUser(username).confirmRegistration(code, true, function confirmCallback(err, result) {
+    function verify(email, code, onSuccess, onFailure) {
+		createCognitoUser(email).confirmRegistration(code, true, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -97,8 +94,8 @@ var ball;
         });
     }
 	
-	/*function forgot(username, onSuccess, onFailure) {
-        createCognitoUser(username).forgotPassword(function confirmCallback(err, result) {
+	/*function forgot(email, onSuccess, onFailure) {
+        createCognitoUser(email).forgotPassword(function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -107,8 +104,8 @@ var ball;
         });
     }
 	
-	function confirmForgotPassword(code, username, password) {
-        createCognitoUser(username).confirmForgotPassword(code, password, function confirmCallback(err, result) {
+	function confirmForgotPassword(code, email, password) {
+        createCognitoUser(email).confirmForgotPassword(code, password, function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
@@ -117,9 +114,9 @@ var ball;
         });
     }*/
 
-    function createCognitoUser(username) {
+    function createCognitoUser(email) {
         return new AmazonCognitoIdentity.CognitoUser({
-            Username: username,
+            Username: email,
             Pool: userPool
         });
     }
@@ -136,11 +133,10 @@ var ball;
     });
 
     function handleSignin(event) {
-		var username = $('#user').val();
         var email = $('#email').val();
         var password = $('#pass').val();
         event.preventDefault();
-        signin(username, email, password,
+        signin(email, password,
             function signinSuccess() {
                 console.log('Successfully Logged In');
                 window.location.href = 'ride.html';
@@ -152,7 +148,6 @@ var ball;
     }
 
     function handleRegister(event) {
-		var username = $('#user').val();
         var email = $('#email').val();
         var password = $('#pass').val();
         var password2 = $('#passcheck').val();
@@ -162,8 +157,6 @@ var ball;
             console.log('user name is ' + cognitoUser.getUsername());
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
-				ball = username;
-				console.log("ball: " + ball);
                 window.location.href = 'verify.html';
             }
         };
@@ -173,19 +166,17 @@ var ball;
         event.preventDefault();
 
         if (password === password2) {
-            register(username, email, password, onSuccess, onFailure);
+            register(email, password, onSuccess, onFailure);
         } else {
             alert('Passwords do not match');
         }
     }
 
     function handleVerify(event) {
-        //var email = $('#emailInputVerify').val();
-		var username = $('#user').val();
+        var email = $('#email').val();
 		var code = $('#code').val();
         event.preventDefault();
-        console.log("username hadleVerify: " + username);
-        verify(username, code,
+        verify(email, code,
             function verifySuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
@@ -199,9 +190,9 @@ var ball;
     }
 	
 	/*function handleForgot(event) {
-        var username = $('#usernameInputForgot').val();
+        var email = $('#email').val();
         event.preventDefault();
-        forgot(username,
+        forgot(email,
             function forgotSuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully forgot');
@@ -216,12 +207,12 @@ var ball;
 	
 	/*function handleConfirmForgot(event) {
 		var code = $('#codeInputConfirmForgot').val();
-        var username = $('#usernameInputConfirmForgot').val();
+        var email = $('#usernameInputConfirmForgot').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
         event.preventDefault();
         if (password === password2) {
-            confirmForgotPassword(code, username, password, 
+            confirmForgotPassword(code, email, password, 
 				function confirmForgotSuccess(result) {
 					console.log('call result: ' + result);
 					console.log('Successfully confirmed forgot');
