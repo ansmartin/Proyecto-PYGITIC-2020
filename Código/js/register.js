@@ -5,9 +5,38 @@ window._config = {
         region: 'us-east-1'
     },
 	api: {
-        invokeUrl: 'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod2'	//'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod'
+        invokeUrl: 'https://4hd9ckubxi.execute-api.us-east-1.amazonaws.com/prod'	//'https://kirm7lqi9d.execute-api.us-east-1.amazonaws.com/prod'
     }
 };
+
+
+/*
+var outputA
+var statusA
+var xhrA
+var aux = $.ajax({
+			method: 'GET',
+			aysnc: false,
+			url: "https://4hd9ckubxi.execute-api.us-east-1.amazonaws.com/prod/heatsense",
+            headers: {
+                'Authorization': "eyJraWQiOiJjWXN6bmJuaVBNcm5qdytFcHdZQTN2ZTdnSzM1Q1Y4K0F2dFBVc293ODZNPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJkNTY1NGE5OC1kYTllLTQxYmUtOGNjOC1lY2VjYmU2NGQxNjMiLCJhdWQiOiI3ZGUyMWxuNTFsMW85OTV2NWZxMGlwYzF2aCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJldmVudF9pZCI6ImYxOTQxOGQ3LTk3Y2MtNDgxNy1iZDA2LTAzMzFhMWIwZTcxMyIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTkwNTIzMjg5LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9TUGhGNm05NWoiLCJjb2duaXRvOnVzZXJuYW1lIjoibGVvbmFyZG8uY2FyZG96b0BhbHUudWNsbS5lcyIsImV4cCI6MTU5MDUyNjg4OSwiaWF0IjoxNTkwNTIzMjg5LCJlbWFpbCI6Imxlb25hcmRvLmNhcmRvem9AYWx1LnVjbG0uZXMifQ.Ey2KNiJcBaYbcAt92VP2QgUQNIAo9dbE0kfDglDLk6B6Mg1i15bXnbwEKZIa17fwUIn9GIx8fwHU4cyq728iPn7m_Y_a8Vo1TzYB0hyJB5l2hoDJp4XkQc2whYM1BKWrl_QU_B_24meSUGw2nPQmjndXKPzfts1SIURlcU3MOhU67Tr5JV2i4-TSfBw4oP_rMG2RY8ogVapKHWALS8hv6tDq3zxyr-9JnIg5MyeRfqZZsveSLjSJ7m7MLRnD77UQhQkYn2ph7lHjAQFUzPzLVAqiPwr2ZfVtvODUaLqabnSoQ5pOzp8QOmXA8VvBAmyxjTkb-t_3lGcKOfD26HGwBQ",
+				'Access-Control-Allow-Origin': '*'
+            },
+			success: function(output, status, xhr){
+				console.log("All: " + xhr.getAllResponseHeaders());
+				console.log("output" + output);
+			},
+			error: function(output, status, xhr){
+				console.log("Error: " + status);
+				outputA = output
+				statusA = status
+				xhrA = xhr
+				//console.log("Error output: " + type(output));
+				//console.log("Error All: " + json.stringify(xhr));
+			}
+		})
+*/
+
 
 var HeatSense = window.HeatSense || {};
 
@@ -130,46 +159,58 @@ var HeatSense = window.HeatSense || {};
     });
 	
 	function getTemp(){
+		var datos;
 		var url = _config.api.invokeUrl + '/heatsense';
 		var headers = {
                 Authorization: authToken
             };
-		alert("url: " + url);
-		$.get({
+		
+		/*var client = new XMLHttpRequest();
+		client.open("GET", url, true);
+		client.setRequestHeader('Authorization', authToken);
+		client.setRequestHeader('Access-Control-Allow-Origin', '*');
+		client.send();
+		client.onreadystatechange = function() {
+			console.log("All?: " + client.getAllResponseHeaders());
+			console.log("Headers: " + client.HEADERS_RECEIVED)
+		  /*if(this.readyState == this.HEADERS_RECEIVED) {
+			console.log("log: " + this.getAllResponseHeaders());
+		  }
+		}*/
+		
+		$.ajax({
+			method: 'GET',
+			async: false,
 			url: url,
             headers: {
                 'Authorization': authToken,
-				'Access-Control-Allow-Origin': '*'
+				'Access-Control-Allow-Origin': '*'//'http://muii-pygitic-abp-heatsense.s3-website-us-east-1.amazonaws.com/'
             },
-			success: function(data, status){
-						alert("Data?: " + data);
-					}
+			success: function(output, status, xhr){
+				datos = xhr.getResponseHeader("content-type");
+			},
+			error: function(output){
+				console.log("Error");
+			}
 		});
-		/*$.get(url, function(data, status){
-			alert("Data?: " + data);
-		});*/
-		/*$.ajax({
-            method: 'GET',
-            url: _config.api.invokeUrl + '/heatsense',
-            headers: {
-                Authorization: authToken
-            },
-			
-		});*/
-		alert("Data: " + data);
+		return datos;
 	}
 
     function handleSignin(event) {
         var email = $('#email').val();
         var password = $('#pass').val();
+		var temp;
         event.preventDefault();
         signin(email, password,
-            function signinSuccess() {
-				alert("Antes.");				
-				getTemp();
-				alert("Después.");		
+            function signinSuccess() {	
+				temp = getTemp();
+				console.log("temp: " + temp);
 				console.log('Successfully Logged In');
-                window.location.href = 'good2go.html';
+				if(temp > 37.6){
+					window.location.href = 'stayhome.html';
+				}else{
+					window.location.href = 'good2go.html';
+				}
             },
             function signinError(err) {
                 alert(err);
