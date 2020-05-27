@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Reset password</title>
+  <title>Verify your account</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/png" href="img/icon.png" />
@@ -49,13 +49,16 @@
   <div class="row">
     <div class="col-sm-4">
 			<div class="login-card">
-				<h1>Reset password</h1><br>
-				<form id="forgotForm">
-                    <input type="text" id="emailForgot" name="emailForgot" placeholder="Email address">
-                    
-              <br><input type="submit" name="forgot" class="login login-submit" value="Send e-mail">
-              <a href="index.html" style="float:right;">< - Go back</a>
-            </form>
+				<h1>Confirm code reception</h1><br>
+				<form id="confirmForgotForm">
+					<input type="text" id="emailInputConfirmForgot" name="email" placeholder="E-mail address">
+                    <input type="text" id="codeInputConfirmForgot" name="code" placeholder="Enter your code">
+					<input type="password" id="passwordInputConfirmForgot" name="pass" placeholder="Password">
+					<input type="password" id="password2InputConfirmForgot" name="passcheck" placeholder="Confirm password">
+					<br><input type="submit" name="confirmForgot" id="confirmForgot" class="login login-submit" value="Confirm Forgot">
+					<!--onclick="show()";-->
+					<a href="index.html" style="float:right;">< - Go back</a>
+				</form>
 
 				<div class="login-help">
 				</div>
@@ -82,8 +85,10 @@
 
 <script>
     function show(){
-        alert("An e-mail with instructions has been sent to the provided adress");
-        window.location.href = "index.html";
+        //alert("An e-mail with instructions has been sent to the provided adress");
+        //window.location.href = "index.html";
+		console.log("email: " + $('#emailVerifyForm').val() + " code: " + $('#codeVerifyForm').val());
+		alert("email: " + $('#emailVerifyForm').val() + " code: " + $('#codeVerifyForm').val());
     }
 </script>
  
