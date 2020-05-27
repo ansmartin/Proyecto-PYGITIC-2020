@@ -24,6 +24,6 @@ def lambda_handler(event, context):
     tabla.put_item(Item={
         'id' : m['MessageId'],
         'date' : m['Timestamp'],
-        'userid' : mensaje['id'],
+        #'userid' : mensaje['id'],
         'temp' : temp
     })
