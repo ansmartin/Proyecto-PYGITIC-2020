@@ -93,23 +93,23 @@ var HeatSense = window.HeatSense || {};
     }
 	
 	function forgot(email, onSuccess, onFailure) {
-        createCognitoUser(email).forgotPassword(email, function confirmCallback(err, result) {
+        createCognitoUser(email).forgotPassword(email, onSuccess(result), onFailure(err) /*function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
                 onFailure(err);
             }
-        });
+        }*/);
     }
 	
 	function confirmForgotPassword(code, email, password, onSuccess, onFailure) {
-        createCognitoUser(email).confirmPassword(code, password, function confirmCallback(err, result) {
+        createCognitoUser(email).confirmPassword(code, password, onSuccess(result), onFailure(err) /*function confirmCallback(err, result) {
             if (!err) {
                 onSuccess(result);
             } else {
                 onFailure(err);
             }
-        });
+        }*/);
     }
 
     function createCognitoUser(email) {
