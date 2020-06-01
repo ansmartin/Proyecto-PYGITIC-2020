@@ -93,23 +93,15 @@ var HeatSense = window.HeatSense || {};
     }
 	
 	function forgot(email, onSuccess, onFailure) {
-        createCognitoUser(email).forgotPassword(email, onSuccess(result), onFailure(err) /*function confirmCallback(err, result) {
-            if (!err) {
-                onSuccess(result);
-            } else {
-                onFailure(err);
-            }
-        }*/);
+        createCognitoUser(email).forgotPassword(email, {
+			onSuccess: onSuccess()
+		});
     }
 	
 	function confirmForgotPassword(code, email, password, onSuccess, onFailure) {
-        createCognitoUser(email).confirmPassword(code, password, onSuccess(result), onFailure(err) /*function confirmCallback(err, result) {
-            if (!err) {
-                onSuccess(result);
-            } else {
-                onFailure(err);
-            }
-        }*/);
+        createCognitoUser(email).confirmPassword(code, password, {
+			onSuccess: onSuccess()
+		});
     }
 
     function createCognitoUser(email) {
@@ -221,14 +213,16 @@ var HeatSense = window.HeatSense || {};
         var email = $('#emailForgot').val();
         event.preventDefault();
         forgot(email,
-            function forgotSuccess(result) {
-                console.log('call result: ' + result);
+            function forgotSuccess(/*result*/) {
+                //console.log('call result: ' + result);
                 console.log('Successfully forgot');
                 alert('Forgot successful. You will now be redirected to the confirm code forgot page.');
                 window.location.href = "confirmForgot.html";
             },
-            function forgotError(err) {
-                alert(err);
+            function forgotError(/*err*/) {
+                //alert(err);
+				alert("Error");
+				window.location.href = "404.html";
             }
         );
     }
@@ -241,14 +235,16 @@ var HeatSense = window.HeatSense || {};
         event.preventDefault();
         if (password === password2) {
             confirmForgotPassword(code, email, password, 
-				function confirmForgotSuccess(result) {
-					console.log('call result: ' + result);
+				function confirmForgotSuccess(/*result*/) {
+					//console.log('call result: ' + result);
 					console.log('Successfully confirmed forgot');
 					alert('Confirmed forgot successful. You will now be redirected to the login page.');
 					window.location.href = signinUrl;
 				},
-				function confirmForgotError(err) {
-					alert(err);
+				function confirmForgotError(/*err*/) {
+					alert(/*err*/);
+					alert("Error");
+					window.location.href = "404.html";
 				}
 			);
         } else {
